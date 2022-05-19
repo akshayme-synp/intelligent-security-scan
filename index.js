@@ -41,15 +41,15 @@ try {
         PowerShell.$`Invoke-WebRequest https://raw.githubusercontent.com/akshayme-synp/insecure-bank/master/prescription.ps1 -SkipHttpErrorCheck -OutFile 'prescription.ps1' -PassThru`;
         
         
-		PowerShell.$`prescription.ps1 -stage 'io' -io_url '${ioServerUrl}' -io_token '${ioServerToken}' -project_name '${asset_id}' -scm_type '${scmType}' -scm_owner '${scmOwner}' -scm_repo_name '${scmRepoName}' -scm_branch_name '${scmBranchName}' -github_username '${githubUsername}' -github_access_token '${{secrets.SCM_ACCESS_TOKEN}}' -gitlab_url 'https://www.gitlab.com' -gitlab_token '' -persona 'developer' -release_type 'minor' -polaris_project_name 'akshayme-synp/insecure-bank' -polaris_server_url '${{secrets.POLARIS_SERVER_URL}}' -polaris_access_token '${{secrets.POLARIS_ACCESS_TOKEN}}' -is_sast_enabled 'true' ${additionalWorkflowArgs}`;
-		
-		
-		let rawdata = fs.readFileSync('result.json');
-		let result_json = JSON.parse(rawdata);
-		let is_sast_enabled = result_json.security.activities.sast.enabled
-		let is_sca_enabled = result_json.security.activities.sca.enabled
-		console.log('Is SAST Enabled: '+is_sast_enabled);
-		console.log('Is SCA Enabled: '+is_sca_enabled);
+	PowerShell.$`prescription.ps1 -stage 'io' -io_url '${ioServerUrl}' -io_token '${ioServerToken}' -project_name '${asset_id}' -scm_type '${scmType}' -scm_owner '${scmOwner}' -scm_repo_name '${scmRepoName}' -scm_branch_name '${scmBranchName}' -github_username '${githubUsername}' -polaris_project_name '${asset_id}' -is_sast_enabled 'true' ${additionalWorkflowArgs}`;
+
+
+	let rawdata = fs.readFileSync('result.json');
+	let result_json = JSON.parse(rawdata);
+	let is_sast_enabled = result_json.security.activities.sast.enabled
+	let is_sca_enabled = result_json.security.activities.sca.enabled
+	console.log('Is SAST Enabled: '+is_sast_enabled);
+	console.log('Is SCA Enabled: '+is_sca_enabled);
 
         PowerShell.$`echo "::set-output name=sastScan::$is_sast_enabled"`
         PowerShell.$`echo "::set-output name=scaScan::$is_sca_enabled"`
